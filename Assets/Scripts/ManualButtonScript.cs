@@ -24,15 +24,15 @@ public class ManualButtonScript : MonoBehaviour
     {
         if (manager.currentScreen == GameManagerScript.Screen.EXTRACTION)
         {
-            manager.oilAmount += 1;
+            manager.AddOil(1); // temp, should add manual rate
         }
         else if (manager.currentScreen == GameManagerScript.Screen.PRODUCTION)
         {
-            manager.plasticAmount += 1;
+            manager.AddPlastic(1); // temp, should add manual rate
         }
         else
         {
-            manager.moneyAmount += 1; // temp, should be customers
+            manager.AddMoney(1); // temp, should be customers
         }
 
     }

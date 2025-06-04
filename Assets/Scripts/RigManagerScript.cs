@@ -2,9 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RigAdderScript : MonoBehaviour
+public class RigManagerScript : MonoBehaviour
 {
     [SerializeField] GameObject GameManager;
+    [SerializeField] GameObject rigPrefab;
+    [SerializeField] Transform rigGroup;
 
     GameManagerScript manager;
 
@@ -22,6 +24,10 @@ public class RigAdderScript : MonoBehaviour
 
     public void AddRig()
     {
-        manager.rigCount += 1;
+        manager.AddRig(1);
+        GameObject r = Instantiate(rigPrefab);
+        r.transform.SetParent(rigGroup.transform);
+
+        manager.UpdateOilRate();
     }
 }

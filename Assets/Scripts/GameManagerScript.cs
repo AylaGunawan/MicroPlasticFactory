@@ -16,6 +16,8 @@ public class GameManagerScript : MonoBehaviour
     [SerializeField] GameObject PlasticTextObj;
     [SerializeField] GameObject MoneyTextObj;
 
+    [Space]
+
     [SerializeField] GameObject OilRateTextObj;
     [SerializeField] GameObject PlasticRateTextObj;
     [SerializeField] GameObject MoneyRateTextObj;
@@ -36,9 +38,29 @@ public class GameManagerScript : MonoBehaviour
     public float plasticAmount;
     public float moneyAmount;
 
-    public float oilRate;
-    public float plasticRate;
-    public float moneyRate;
+    [Space]
+
+    public float oilRateVal;
+    public float plasticRateVal;
+    public float moneyRateVal;
+
+    [Space]
+
+    public float oilRatePercent;
+    public float plasticRatePercent;
+    public float moneyRatePercent;
+
+    [Space]
+
+    public float oilRateMult;
+    public float plasticRateMult;
+    public float moneyRateMult;
+
+    [Space]
+
+    public float oilRateTotal;
+    public float plasticRateTotal;
+    public float moneyRateTotal;
 
     [Header("Facility Variables")]
 
@@ -63,6 +85,22 @@ public class GameManagerScript : MonoBehaviour
         plasticAmount = 0.0f;
         moneyAmount = 0.0f;
 
+        oilRateVal = 1.0f;
+        plasticRateVal = 1.0f;
+        moneyRateVal = 1.0f;
+
+        oilRatePercent = 0.0f;
+        plasticRatePercent = 0.0f;
+        moneyRatePercent = 0.0f;
+
+        oilRateMult = 1.0f;
+        plasticRateMult = 1.0f;
+        moneyRateMult = 1.0f;
+
+        UpdateOilRate();
+        UpdatePlasticRate();
+        moneyRateTotal = 0.0f;
+
         rigCount = 0;
         plantCount = 0;
     }
@@ -74,8 +112,48 @@ public class GameManagerScript : MonoBehaviour
         PlasticText.text = plasticAmount.ToString();
         MoneyText.text = moneyAmount.ToString();
 
-        OilRateText.text = oilRate.ToString() + "/s";
-        PlasticRateText.text = plasticRate.ToString() + "/s";
-        MoneyRateText.text = moneyRate.ToString() + "/s";
+        OilRateText.text = oilRateTotal.ToString() + "/s";
+        PlasticRateText.text = plasticRateTotal.ToString() + "/s";
+        MoneyRateText.text = moneyRateTotal.ToString() + "/s";
+    }
+
+    public void UpdateOilRate()
+    {
+        oilRateTotal = ((oilRateVal + (oilRateVal * oilRatePercent)) * rigCount) * oilRateMult;
+    }
+
+    public void UpdatePlasticRate()
+    {
+        plasticRateTotal = ((plasticRateVal + (plasticRateVal * plasticRatePercent)) * plantCount) * plasticRateMult; // mult at end?
+    }
+
+    public float GetOilPerRig()
+    {
+        return plasticRateVal + (plasticRateVal * plasticRatePercent);
+    }
+
+    public void AddOil(float val)
+    {
+        oilAmount += val;
+    }
+
+    public void AddPlastic(float val)
+    {
+        plasticAmount += val;
+    }
+
+    public void AddMoney(float val)
+    {
+        moneyAmount += val;
+    }
+
+    public void AddRig(int val)
+    {
+        rigCount += val;
+    }
+
+    public void AddPlant(int val)
+    {
+        plantCount += val;
     }
 }
