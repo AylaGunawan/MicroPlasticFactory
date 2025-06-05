@@ -22,11 +22,10 @@ public class RigManagerScript : MonoBehaviour
         
     }
 
-    public void AddRig()
+    public void AddRigInstance()
     {
         manager.AddRig(1);
-        GameObject r = Instantiate(rigPrefab);
-        r.transform.SetParent(rigGroup.transform);
+        GameObject r = Instantiate(rigPrefab, rigGroup);
 
         manager.UpdateOilRate();
     }

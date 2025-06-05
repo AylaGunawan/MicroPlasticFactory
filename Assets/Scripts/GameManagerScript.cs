@@ -38,11 +38,12 @@ public class GameManagerScript : MonoBehaviour
     public float plasticAmount;
     public float moneyAmount;
 
-    [Space]
+    [Header("Rate Variables")]
 
     public float oilRateVal;
     public float plasticRateVal;
     public float moneyRateVal;
+    // customer rate
 
     [Space]
 
@@ -62,14 +63,33 @@ public class GameManagerScript : MonoBehaviour
     public float plasticRateTotal;
     public float moneyRateTotal;
 
+    [Header("Manual Variables")]
+
+    public float oilManualVal;
+    public float plasticManualVal;
+
+    [Space]
+
+    public float oilManualPercent;
+    public float plasticManualPercent;
+
+    [Space]
+
+    public float oilManualMult;
+    public float plasticManualMult;
+
+    [Space]
+
+    public float oilManualTotal;
+    public float plasticManualTotal;
+
     [Header("Facility Variables")]
 
     public int rigCount;
     public int plantCount;
     //public int permitCount;
 
-    // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         OilText = OilTextObj.GetComponent<TMP_Text>();
         PlasticText = PlasticTextObj.GetComponent<TMP_Text>();
@@ -78,8 +98,6 @@ public class GameManagerScript : MonoBehaviour
         OilRateText = OilRateTextObj.GetComponent<TMP_Text>();
         PlasticRateText = PlasticRateTextObj.GetComponent<TMP_Text>();
         MoneyRateText = MoneyRateTextObj.GetComponent<TMP_Text>();
-
-        currentScreen = Screen.EXTRACTION;
 
         oilAmount = 0.0f;
         plasticAmount = 0.0f;
@@ -101,8 +119,26 @@ public class GameManagerScript : MonoBehaviour
         UpdatePlasticRate();
         moneyRateTotal = 0.0f;
 
+        oilManualVal = 1.0f;
+        plasticManualVal = 1.0f;
+
+        oilManualPercent = 0.0f;
+        plasticManualPercent = 0.0f;
+
+        oilManualMult = 1.0f;
+        plasticManualMult = 1.0f;
+
+        UpdateOilManual();
+        UpdatePlasticManual();
+
         rigCount = 0;
         plantCount = 0;
+    }
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        currentScreen = Screen.EXTRACTION;
     }
 
     // Update is called once per frame
@@ -119,17 +155,42 @@ public class GameManagerScript : MonoBehaviour
 
     public void UpdateOilRate()
     {
-        oilRateTotal = ((oilRateVal + (oilRateVal * oilRatePercent)) * rigCount) * oilRateMult;
+        oilRateTotal = GetOilPerRig() * rigCount;
     }
 
     public void UpdatePlasticRate()
     {
-        plasticRateTotal = ((plasticRateVal + (plasticRateVal * plasticRatePercent)) * plantCount) * plasticRateMult; // mult at end?
+        plasticRateTotal = GetPlasticPerPlant() * plantCount;
+    }
+
+    public void UpdateOilManual()
+    {
+        oilManualTotal = GetOilManual();
+    }
+
+    public void UpdatePlasticManual()
+    {
+        plasticManualTotal = GetPlasticManual();
     }
 
     public float GetOilPerRig()
     {
-        return plasticRateVal + (plasticRateVal * plasticRatePercent);
+        return (oilRateVal + (oilRateVal * oilRatePercent)) * oilRateMult;
+    }
+
+    public float GetPlasticPerPlant()
+    {
+        return (plasticRateVal + (plasticRateVal * plasticRatePercent)) * plasticRateMult;
+    }
+
+    public float GetOilManual()
+    {
+        return (oilManualVal + (oilManualVal * oilManualPercent)) * oilManualMult;
+    }
+
+    public float GetPlasticManual()
+    {
+        return (plasticManualVal + (plasticManualVal * plasticManualPercent)) * plasticManualMult;
     }
 
     public void AddOil(float val)

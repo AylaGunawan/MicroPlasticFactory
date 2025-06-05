@@ -24,11 +24,11 @@ public class ManualButtonScript : MonoBehaviour
     {
         if (manager.currentScreen == GameManagerScript.Screen.EXTRACTION)
         {
-            manager.AddOil(1); // temp, should add manual rate
+            manager.AddOil(manager.GetOilManual()); // temp, should add manual rate
         }
         else if (manager.currentScreen == GameManagerScript.Screen.PRODUCTION)
         {
-            manager.AddPlastic(1); // temp, should add manual rate
+            manager.AddPlastic(manager.GetPlasticManual()); // temp, should add manual rate
         }
         else
         {
