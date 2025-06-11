@@ -13,10 +13,6 @@ public class RigScript : MonoBehaviour
     void Start()
     {
         manager = FindAnyObjectByType<GameManagerScript>();
-        if (manager != null)
-        {
-            Debug.Log("yippee");
-        }
 
         timer = time;
     }

@@ -5,40 +5,89 @@ using UnityEngine;
 public class SwipeControllerScript : MonoBehaviour
 {
     [SerializeField] GameObject GameManager;
+    [SerializeField] GameObject RigGroup;
+    [SerializeField] GameObject PlantGroup;
+    [SerializeField] GameObject ShopGroup;
+    [SerializeField] Camera Camera;
 
     GameManagerScript manager;
 
-    Vector2 startPos;
-    Vector2 endPos;
+    Vector3 touchStart;
+    Vector3 touchEnd;
+    Vector3 touchLast;
+    Vector3 camPos;
+
+    public float swipeSpeed = 0.01f;
+    public float swipeThreshold = 300f;
+    public float screenCenterX = 0f;
 
     // Start is called before the first frame update
     void Start()
     {
         manager = GameManager.GetComponent<GameManagerScript>();
+
+        manager.currentScreen = GameManagerScript.Screen.EXTRACTION;
+
+        screenCenterX = RigGroup.transform.position.x;
+        camPos = new Vector3(screenCenterX, 0f, 0f);
+        Camera.transform.position = camPos;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
+        if (Input.touchCount == 1)
         {
-            startPos = Input.GetTouch(0).position;
-            Debug.Log("start=" + Input.GetTouch(0).position.ToString());
-        }
+            Touch touch = Input.GetTouch(0);
 
-        if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Ended)
-        {
-            endPos = Input.GetTouch(0).position;
-            Debug.Log("end=" + Input.GetTouch(0).position.ToString());
-
-            if (endPos.x < startPos.x)
+            if (touch.phase == TouchPhase.Began)
             {
-                NextScreen();
+                touchStart = new Vector3(touch.position.x, touch.position.y, 0f);
+                touchLast = touchStart;
             }
 
-            if (endPos.x > startPos.x)
+            else if (touch.phase == TouchPhase.Moved)
             {
-                PrevScreen();
+                Vector3 touchCurrent = new Vector3(touch.position.x, touch.position.y);
+                Vector3 touchMove = touchCurrent - touchLast;
+
+                // Convert screen delta to world movement
+                float moveX = -touchMove.x * swipeSpeed;
+
+                // Apply horizontal movement only
+                camPos += new Vector3(moveX, 0f, 0f);
+                Camera.transform.position = camPos;
+
+                touchLast = touchCurrent;
+            }
+
+            else if (touch.phase == TouchPhase.Ended)
+            {
+                touchEnd = touch.position;
+
+                float touchXDiff = Mathf.Abs(touchEnd.x - touchStart.x);
+
+                if (touchXDiff >= swipeThreshold)
+                {
+                    if (touchEnd.x < touchStart.x)
+                    {
+                        NextScreen();
+                        
+                    }
+
+                    if (touchEnd.x > touchStart.x)
+                    {
+                        PrevScreen();
+                        
+                    }
+                }
+                else
+                {
+                    
+                }
+
+                camPos = new Vector3(screenCenterX, 0f, 0f);
+                Camera.transform.position = camPos;
             }
         }
     }
@@ -48,11 +97,13 @@ public class SwipeControllerScript : MonoBehaviour
         if (manager.currentScreen == GameManagerScript.Screen.EXTRACTION)
         {
             manager.currentScreen = GameManagerScript.Screen.PRODUCTION;
+            screenCenterX = PlantGroup.transform.position.x;
         }
 
         else if (manager.currentScreen == GameManagerScript.Screen.PRODUCTION)
         {
             manager.currentScreen = GameManagerScript.Screen.DISTRIBUTION;
+            screenCenterX = ShopGroup.transform.position.x;
         }
     }
 
@@ -61,11 +112,13 @@ public class SwipeControllerScript : MonoBehaviour
         if (manager.currentScreen == GameManagerScript.Screen.DISTRIBUTION)
         {
             manager.currentScreen = GameManagerScript.Screen.PRODUCTION;
+            screenCenterX = PlantGroup.transform.position.x;
         }
 
         else if (manager.currentScreen == GameManagerScript.Screen.PRODUCTION)
         {
             manager.currentScreen = GameManagerScript.Screen.EXTRACTION;
+            screenCenterX = RigGroup.transform.position.x;
         }
     }
 }
